@@ -4,6 +4,10 @@
   <title>pinger.html - Monday, May 23 2011</title>
 </head>
 <body>
+<h1>Pong: Not Quite Ping</h1>
+<p>
+Welcome to pong tool.  It lives <a href="https://github.com/eejjjj82/Pong">here</a>.  Try it below.
+</p>
 <div>
   <label>Host:</label> <input type="text" value="tidal7.com" id="ping-host"/>
   <label>Async:</label> <input type="checkbox" value="true" id="ping-async"/>
@@ -48,7 +52,7 @@
     pong.async = async || pong.async;
     pong.interval = interval || pong.interval;
 
-    writeLog("Pinging host: " + host, 'h1');
+    writeLog("Pinging host: " + host, 'h2');
     writeLog("Async: " + (async ? "yes" : "no") + ", Count: " + count);
     writeLog(null,"br");
 
