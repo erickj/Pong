@@ -69,9 +69,10 @@ No.     Time        Source                Destination           Protocol Info
  * @example
  *
 
-Pong.host = "www.quirksmode.org";
-Pong.ping(function(res) { console.log(res.delta()); });
-Pong.ping(function(res) { console.log(res.delta()); }, 10);
+var pong = new Pong();
+pong.host = "www.quirksmode.org";
+pong.ping(function(res) { console.log(res.delta()); });
+pong.ping(function(res) { console.log(res.delta()); }, 10);
 
  *
  * @see http://www.w3.org/TR/XMLHttpRequest/
@@ -79,6 +80,12 @@ Pong.ping(function(res) { console.log(res.delta()); }, 10);
  */
 if (!window['XMLHttpRequestException']) { // chrome throws these but ff 4 doesn't define it
   XMLHttpRequestException = {};
+}
+
+if (!Date.now) {
+  Date.now = function() {
+    return (new Date()).getTime();
+  };
 }
 
 var Pong = function() {};
