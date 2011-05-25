@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>pinger.html - Monday, May 23 2011</title>
+</head>
+<body>
+<div>
+  <label>Host:</label> <input type="text" value="tidal7.com" id="ping-host"/>
+  <label>Async:</label> <input type="checkbox" value="true" id="ping-async"/>
+  <label>Count:</label> <input type="text" value="5" id="ping-count" size="2"/>
+  <label>Interval:</label> <input type="text" value="1000" id="ping-interval" size="3"/>ms
+  <input type="button" value="Ping" id="ping-start"></input>
+</div>
+
+<div id="logger"></div>
+<script type="text/javascript" src="pong.js"></script>
+<script type="text/javascript">
+  var button = document.getElementById('ping-start');
+  button.onclick = function() {
+    clearLog();
+    var iHost = document.getElementById('ping-host'),
+      iCnt = document.getElementById('ping-count'),
+      iInt = document.getElementById('ping-interval'),
+      iAsync =  document.getElementById('ping-async');
+
+    doPing(iHost.value, iAsync.checked, iCnt.value, iInt.value);
+  };
+
+  function clearLog() {
+    var el = document.getElementById('logger');
+    while (el.hasChildNodes()) {
+      el.removeChild(el.lastChild);
+    }
+  };
+
+  function writeLog(msg,tag) {
+    tag = tag || "div"
+    var el = document.createElement(tag);
+    if (msg) el.appendChild(document.createTextNode(msg));
+    document.getElementById('logger').appendChild(el);
+  };
+
+  function doPing(host,async,count,interval) {
+    var i = 0, pong = new Pong();
+
+    pong.id = Date.now();
+    pong.host = host || pong.host;
+    pong.async = async || pong.async;
+    pong.interval = interval || pong.interval;
+
+    writeLog("Pinging host: " + host, 'h1');
+    writeLog("Async: " + (async ? "yes" : "no") + ", Count: " + count);
+    writeLog(null,"br");
+
+    setTimeout(function() {
+      pong.ping(function(r) {
+        var msg = "ID: " + this.id + " - " + (++i).toString() + ".) " + this.host + ": " + r.delta().toString();
+        msg += (r.delta().toString() == parseInt(r.delta().toString())) ? " ms" : "";
+
+        writeLog(msg);
+      },count);
+    },0);
+  };
+</script>
+
+</body>
+</html>
