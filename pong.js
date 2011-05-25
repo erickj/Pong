@@ -1,4 +1,9 @@
 /**
+ * @see LICENSE.txt
+ * @copyright 2011 Erick Johnson
+ */
+
+/**
  * Pong: Not quite ping
  *
  * Unfortunately this implementation is severly limited by the remote host responding
