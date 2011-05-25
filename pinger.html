@@ -40,6 +40,14 @@
     Anyway - it was fun to make. Enjoy.
   </p>
 
+  <p>
+    Ohhhh... yeah, pong has been tested successfully on FF4, Chrome 11, and Safari 5.  I know for a fact pong is broken on Opera due to lack of CORS support.  IE 8 is never going to work - the XDomainRequest objects doesn't provide useful erroring/progress callbacks.
+  </p>
+
+  <p>
+    Another heads up... Windows firewall blocks all inbound ICMP requests by default - you'll need to add an exception or disable the firewall for this to work.
+  </p>
+
   <div>
     <label>Host:</label> <input type="text" value="tidal7.com" id="ping-host"/>
     <label>Async:</label> <input type="checkbox" value="true" id="ping-async"/>
