@@ -6,14 +6,22 @@
 /**
  * Pong: Not quite ping
  *
- * Unfortunately this implementation is severly limited by the remote host responding
- * to what is effectively port scans.  Further there is no real way to detect packet loss with
- * this implementation.  That being said, I think it's a fair attempt (or just amusing) way to
- * detect latency and jitter from the browser.
+ * NOTE: This fails on Opera due to lack of CORS support.  IE, even
+ * using the XDomainRequest object just does not call the callbacks at
+ * appropriate times to make this useful.  This has been tested
+ * successfully on FF4, Chrome 11, Safari 5 Be aware that opening the
+ * Firebug console w/ console setting "Show XHRs" on causes problems.
  *
- * Pong works by sending an xml http request to an _UNBOUND_ TCP socket on the remote host.
- * We rely on the remote host sending back an ICMP (dest host unreachable) or a TCP RST packet
- * to the local machine.
+ * Unfortunately this implementation is severly limited by the remote
+ * host responding to what is effectively port scans.  Further there
+ * is no real way to detect packet loss with this implementation.
+ * That being said, I think it's a fair attempt (or just amusing) way
+ * to detect latency and jitter from the browser.
+ *
+ * Pong works by sending an xml http request to an _UNBOUND_ TCP
+ * socket on the remote host.  We rely on the remote host sending back
+ * an ICMP (dest host unreachable) or a TCP RST packet to the local
+ * machine.
 
  * From RFC 792
  * @see http://tools.ietf.org/html/rfc792
@@ -25,26 +33,33 @@ not active, the destination host may send a destination
 unreachable message to the source host."
 
  *
- * At the TCP layer this alerts the local machine that the TCP SYN has been rejected, then we use the
- * the AJAX state changes to record the timestamps.
+ * At the TCP layer this alerts the local machine that the TCP SYN has
+ * been rejected, then we use the the AJAX state changes to record the
+ * timestamps.
  *
- * The method also works cross domain on browsers that support CORS due the preflight request that
- * we expect (need) to fail.
+ * The method also works cross domain on browsers that support CORS
+ * due the preflight request that we expect (need) to fail.
  *
- * From some basic testing I can get results within about 2ms of the corresponding wireshark observed time deltas.
+ * From some basic testing I can get results within about 2ms of the
+ * corresponding wireshark observed time deltas.
  *
- * Here is a wireshark capture describing the network packets I'm talking about:
+ * Here is a wireshark capture describing the network packets I'm
+ * talking about:
  *
 No.     Time        Source                Destination           Protocol Info
   1     0.000000    10.0.1.7              65.98.96.234          TCP      62337 > 1000 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 WS=3 TSV=665428761 TSER=0 SACK_PERM=1
   2     0.014332    65.98.96.234          10.0.1.7              ICMP     Destination unreachable (Host administratively prohibited)
 
  *
- * Naive attempts to use XHR as a ping tool end up with severely inaccurate results.  The problem is that
- * developers consider the HTTP Request/Response round trip equivalent to the ICMP ping echo/response
- * roundtrip.  It isn't.  Further if you actually hit a webserver then you add in the response processing
- * time to the request into the latency.  For example here is a capture of a simple HEAD request, the naive
- * approach actually measures from Packet 1 to Packet 7, but we really just want to measure Packet 1 to 2:
+ * Naive attempts to use XHR as a ping tool end up with severely
+ * inaccurate results.  The problem is that developers consider the
+ * HTTP Request/Response round trip equivalent to the ICMP ping
+ * echo/response roundtrip.  It isn't.  Further if you actually hit a
+ * webserver then you add in the response processing time to the
+ * request into the latency.  For example here is a capture of a
+ * simple HEAD request, the naive approach actually measures from
+ * Packet 1 to Packet 7, but we really just want to measure Packet 1
+ * to 2:
  *
 
 No.     Time        Source                Destination           Protocol Info
@@ -61,9 +76,12 @@ No.     Time        Source                Destination           Protocol Info
  11     0.451457    65.98.96.234          192.168.0.165         TCP      80 > 63852 [ACK] Seq=468 Ack=168 Win=6432 Len=0
 
  *
- * NOTE: IMPORTANT
- * This script will not work if the remote host does not respond to requests to unbound ports. This
- * may be common as the recommendation only defines the requirement to send the ICMP packet as a "MAY"
+ * NOTE: IMPORTANT This script will not work if the remote host does
+ * not respond to requests to unbound ports. This may be common as the
+ * recommendation only defines the requirement to send the ICMP packet
+ * as a "MAY".  Some well known hosts this won't work on are
+ * www.google.com and www.mozilla.org
+ *
  * see above.
  *
  * @example
