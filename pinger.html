@@ -1,24 +1,56 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-  <title>pinger.html - Monday, May 23 2011</title>
+  <title>Pong Demo</title>
 </head>
 <body>
-<h1>Pong: Not Quite Ping</h1>
-<p>
-Welcome to pong tool.  It lives <a href="https://github.com/eejjjj82/Pong">here</a>.  Try it below.
-</p>
-<div>
-  <label>Host:</label> <input type="text" value="tidal7.com" id="ping-host"/>
-  <label>Async:</label> <input type="checkbox" value="true" id="ping-async"/>
-  <label>Count:</label> <input type="text" value="5" id="ping-count" size="2"/>
-  <label>Interval:</label> <input type="text" value="1000" id="ping-interval" size="3"/>ms
-  <input type="button" value="Ping" id="ping-start"></input>
-</div>
+  <h1>Pong: Not Quite Ping</h1>
+  <p>
+    Welcome to pong tool.  It lives <a
+    href="https://github.com/eejjjj82/Pong">here</a>. Pong simulates
+    ping using the DOM provided XMLHttpRequest object.  The trick is
+    to send the request to an UNBOUND socket on the remote end.  This
+    will <em>hopefully</em> generate a single TCP SYN (from the
+    client) and an ICMP "dest host unreachable" (or TCP RST) response
+    packet.  This single packet RTT is measurable using a negative
+    acknowledgement by Pong that the request was unsuccessful:
+  </p>
+  <p>
+    <code>unsuccessful request == measureable ping</code>
+  </p>
+  <p>
+    See the <a href="pong.js">code</a> for more detailed info.
+  </p>
+  <p>
+    What pong can do:
+  </p>
+  <ul>
+    <li>Measure jitter and latency on remote hosts that send a response to requests to unbound ports</li>
+    <li>Generate reasonably accurate ping times in the (albeit few) cases that it works</li>
+  </ul>
+  <p>
+    What pong can&apos;t do:
+  </p>
+  <ul>
+    <li>Tell you anything useful if the remote end black holes the request</li>
+    <li>Measure packet loss meaningfully</li>
+  </ul>
 
-<div id="logger"></div>
-<script type="text/javascript" src="pong.js"></script>
-<script type="text/javascript">
+  <p>
+    Anyway - it was fun to make. Enjoy.
+  </p>
+
+  <div>
+    <label>Host:</label> <input type="text" value="tidal7.com" id="ping-host"/>
+    <label>Async:</label> <input type="checkbox" value="true" id="ping-async"/>
+    <label>Count:</label> <input type="text" value="5" id="ping-count" size="2"/>
+    <label>Interval:</label> <input type="text" value="1000" id="ping-interval" size="3"/>ms
+    <input type="button" value="Ping" id="ping-start"></input>
+  </div>
+
+  <div id="logger"></div>
+  <script type="text/javascript" src="pong.js"></script>
+  <script type="text/javascript">
   var button = document.getElementById('ping-start');
   button.onclick = function() {
     clearLog();
@@ -65,7 +97,6 @@ Welcome to pong tool.  It lives <a href="https://github.com/eejjjj82/Pong">here<
       },count);
     },0);
   };
-</script>
-
+  </script>
 </body>
 </html>
